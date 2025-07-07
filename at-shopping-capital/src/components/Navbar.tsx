@@ -6,24 +6,27 @@ export default function Navbar() {
   const count = useCart((s) => s.items.length);
 
   return (
-    <header className="fixed top-0 left-0 w-full h-16 primary-bg flex items-center justify-between px-8 shadow-md">
-  <Link to="/" className="text-2xl font-bold tracking-tight text-white drop-shadow">
-    Cloud 9
-  </Link>
-  <nav className="flex gap-8 text-lg font-medium">
-    <NavLink to="/" end className="text-white/90 hover:text-white underline-offset-4 hover:underline">Home</NavLink>
-    <NavLink to="/missions" className="text-white/90 hover:text-white underline-offset-4 hover:underline">Missions</NavLink>
-    <NavLink to="/profile" className="text-white/90 hover:text-white underline-offset-4 hover:underline">Profile</NavLink>
-  </nav>
-  <Link to="#" className="relative">
-    <ShoppingCart size={24} color="white" />
-    {count > 0 && (
-      <span className="absolute -top-1 -right-2 text-xs bg-white text-primary font-bold w-5 h-5 rounded-full flex items-center justify-center border border-primary shadow">
-        {count}
-      </span>
-    )}
-  </Link>
-</header>
+     <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 shadow-lg">
+    <div className="container mx-auto flex justify-between items-center">
+      <div className="flex items-center">
+        <div className="text-2xl font-bold">Cloud 9</div>
+        <nav className="ml-10">
+          <ul className="flex space-x-6">
+            <li><a href="#" className="hover:text-blue-200 transition">Home</a></li>
+            <li><a href="#" className="hover:text-blue-200 transition">Missions</a></li>
+            <li><a href="#" className="hover:text-blue-200 transition">Profile</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div className="flex items-center space-x-4">
+        <button className="relative p-2">
+          <ShoppingCart className="h-6 w-6" />
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">3</span>
+        </button>
+        <div className="w-8 h-8 rounded-full bg-blue-300 flex items-center justify-center text-blue-800 font-bold">U</div>
+      </div>
+    </div>
+  </header>
 
   );
 }

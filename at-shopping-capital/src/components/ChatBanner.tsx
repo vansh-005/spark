@@ -4,19 +4,39 @@ import { motion, AnimatePresence } from "framer-motion";
 const collapsedBg = "#2186eb";
 const expandedBg = "#eaf3fe";
 
-// Utility: fetch products from DummyJSON
+// Fetch products from backend
 async function fetchProducts(query: string) {
-  const res = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}`);
-  const data = await res.json();
-  return data.products || [];
+  const res = await fetch(`http://localhost:4000/api/search?q=${encodeURIComponent(query)}`);
+  return await res.json();
 }
 
-// Fetch similar by category (excluding product ID)
-async function fetchSimilar(category: string, id: number) {
-  const res = await fetch(`https://dummyjson.com/products/category/${encodeURIComponent(category)}?limit=6`);
+// Fetch products by IDs
+async function fetchByIds(ids: string[]) {
+  if (ids.length === 0) return [];
+  
+  const res = await fetch(
+    `http://localhost:4000/api/products?ids=${ids.join(',')}`
+  );
+  return await res.json();
+}
+
+// Fetch similar products
+async function fetchSimilar(category: string, excludeId: string) {
+  const res = await fetch(
+    `http://localhost:4000/api/search?category=${encodeURIComponent(category)}`
+  );
   const data = await res.json();
-  // Remove the original product, return top 5
-  return (data.products || []).filter((p: any) => p.id !== id).slice(0, 5);
+  return data.filter((p: any) => p._id !== excludeId).slice(0, 5);
+}
+
+// Chatbot recommendation
+async function chatBotRecommend(prompt: string) {
+  const res = await fetch("http://localhost:4000/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: prompt }),
+  });
+  return await res.json();
 }
 
 export default function ChatBanner() {
@@ -28,46 +48,94 @@ export default function ChatBanner() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Similar popup state
-  const [hovered, setHovered] = useState<number | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
   const [similar, setSimilar] = useState<any[]>([]);
   const [similarLoading, setSimilarLoading] = useState(false);
+
+  // Cart simulation
+  const [cart, setCart] = useState<any[]>([]);
 
   useEffect(() => {
     if (state === "input" && inputRef.current) inputRef.current.focus();
   }, [state]);
 
-  // Simulated "Add to cart"
-  const [cart, setCart] = useState<any[]>([]);
+  // Add to cart function
   function addToCart(product: any) {
     setCart((prev) => [...prev, product]);
-    alert(`Added "${product.title}" to cart!`);
+    alert(`Added "${product.name}" to cart!`);
   }
 
   async function handleSend() {
     if (!input.trim()) return;
-    setMessages((msgs) => [...msgs, { text: input, type: "user" }]);
+
+    // Add user message
+    setMessages(msgs => [...msgs, { text: input, type: "user" }]);
     setInput("");
     setState("chat");
     setProducts([]);
     setLoading(true);
-    // Fetch from DummyJSON
-    const items = await fetchProducts(input);
-    setProducts(items);
-    // Only add AI message
-    setMessages((msgs) => [
-      ...msgs,
-      { text: items.length === 0 ? "Sorry, no products found." : "Here are some options for you!", type: "ai" }
-    ]);
-    setLoading(false);
+
+    try {
+      // Get recommendations
+      const { items: recList, summary } = await chatBotRecommend(input);
+      
+      // Handle empty recommendations
+      if (!recList || recList.length === 0) {
+        setMessages(msgs => [
+          ...msgs,
+          { 
+            text: summary || "No products match your request. Please try different criteria.", 
+            type: "ai" 
+          },
+        ]);
+        setLoading(false);
+        return;
+      }
+
+      // Get full product details
+      const ids = recList.map((r: any) => r.productId);
+      const fullDocs = await fetchByIds(ids);
+
+      // Merge with LLM recommendations
+      const merged = fullDocs.map((p: any) => {
+        const llmRow = recList.find((r: any) => r.productId === p._id);
+        return {
+          ...p,
+          quantity: llmRow?.quantity || "1 unit",
+          reason: llmRow?.reason || "",
+        };
+      });
+
+      setProducts(merged);
+      setMessages(msgs => [
+        ...msgs,
+        { text: summary || "Here are my recommended items!", type: "ai" },
+      ]);
+    } catch (err) {
+      console.error(err);
+      setMessages(msgs => [
+        ...msgs,
+        { 
+          text: "Sorry, I encountered an error. Please try again later.", 
+          type: "ai" 
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   // Similar products on hover
   async function handleProductHover(p: any) {
-    setHovered(p.id);
+    setHovered(p._id);
     setSimilar([]);
     setSimilarLoading(true);
-    const items = await fetchSimilar(p.category, p.id);
-    setSimilar(items);
+    try {
+      const items = await fetchSimilar(p.category, p._id);
+      setSimilar(items);
+    } catch (err) {
+      console.error("Error fetching similar products:", err);
+    }
     setSimilarLoading(false);
   }
 
@@ -140,47 +208,62 @@ export default function ChatBanner() {
                 )}
               </AnimatePresence>
             </div>
+            
             {/* Loading indicator */}
             {loading && (
-              <div className="text-white italic text-center my-4">Loading...</div>
+              <div className="flex flex-col items-center my-4">
+                <div className="w-12 h-12 border-t-4 border-blue-500 border-solid rounded-full animate-spin mb-2"></div>
+                <p className="text-blue-700">Finding best products for you...</p>
+              </div>
             )}
+            
+            {/* Empty state */}
+            {!loading && products.length === 0 && state === "chat" && (
+              <div className="text-center py-4">
+                <p className="text-red-600 mb-2">No products found</p>
+                <button 
+                  onClick={() => setState("input")}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
             {/* Product cards */}
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {!loading && products.length > 0 &&
                 products.map((p: any) => (
                   <motion.div
                     layout
-                    key={p.id}
+                    key={p._id}
                     className="relative bg-white/95 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-4 p-4 mt-2 border-2 border-blue-100"
                     onMouseEnter={() => handleProductHover(p)}
                     onMouseLeave={handleProductLeave}
                   >
                     <img
-                      src={p.thumbnail}
-                      alt={p.title}
+                      src={p.image}
+                      alt={p.name}
                       className="h-28 w-28 object-contain rounded-xl shadow-sm"
                     />
                     <div className="flex-1">
-                      <div className="font-bold text-blue-900 text-lg">{p.title}</div>
-                      <div className="text-base text-gray-600 mb-2">{p.brand}</div>
+                      <div className="font-bold text-blue-900 text-lg">{p.name}</div>
+                      {p.brand && (
+                        <div className="text-base text-gray-600 mb-2">{p.brand}</div>
+                      )}
                       <div className="flex items-center gap-3 mb-2">
                         <span className="font-bold text-green-700 text-lg">₹{p.price}</span>
-                        <span className="text-xs line-through text-gray-400">
-                          {p.discountPercentage > 0
-                            ? `₹${Math.round(p.price / (1 - p.discountPercentage / 100))}`
-                            : ""}
-                        </span>
-                        {p.discountPercentage > 0 && (
-                          <span className="bg-green-100 text-green-800 text-xs rounded px-2 py-1">
-                            {Math.round(p.discountPercentage)}% OFF
-                          </span>
-                        )}
                         {p.stock < 5 && (
                           <span className="bg-red-100 text-red-800 text-xs rounded px-2 py-1">
                             Low stock!
                           </span>
                         )}
                       </div>
+                      {p.reason && (
+                        <div className="text-sm text-gray-700 mb-2">
+                          <span className="font-semibold">Why:</span> {p.reason}
+                        </div>
+                      )}
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => addToCart(p)}
@@ -188,14 +271,15 @@ export default function ChatBanner() {
                         >
                           Add to Cart
                         </button>
-                        <span className="text-yellow-600 font-semibold text-xs flex items-center gap-1">
-                          ★ {p.rating}
+                        <span className="text-sm text-gray-600">
+                          Qty: {p.quantity}
                         </span>
                       </div>
                     </div>
+                    
                     {/* Similar products popup */}
                     <AnimatePresence>
-                      {hovered === p.id && (
+                      {hovered === p._id && (
                         <motion.div
                           initial={{ opacity: 0, x: 32 }}
                           animate={{ opacity: 1, x: 16 }}
@@ -214,10 +298,10 @@ export default function ChatBanner() {
                           {!similarLoading && similar.length > 0 && (
                             <div className="flex flex-col gap-2">
                               {similar.map((s) => (
-                                <div key={s.id} className="flex gap-2 items-center py-1 hover:bg-blue-50 rounded-lg transition">
-                                  <img src={s.thumbnail} alt={s.title} className="w-10 h-10 rounded bg-gray-100 object-contain" />
+                                <div key={s._id} className="flex gap-2 items-center py-1 hover:bg-blue-50 rounded-lg transition">
+                                  <img src={s.image} alt={s.name} className="w-10 h-10 rounded bg-gray-100 object-contain" />
                                   <div className="flex-1">
-                                    <div className="text-xs font-medium text-blue-900 truncate">{s.title}</div>
+                                    <div className="text-xs font-medium text-blue-900 truncate">{s.name}</div>
                                     <div className="text-xs text-green-700 font-semibold">₹{s.price}</div>
                                   </div>
                                   <button
@@ -236,6 +320,7 @@ export default function ChatBanner() {
                   </motion.div>
                 ))}
             </div>
+            
             {/* Input row */}
             <div className="flex items-center gap-3 w-full mt-4">
               <input
