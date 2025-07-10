@@ -22,30 +22,33 @@ const Home: React.FC = () => {
       </div>
 
       {/* Shop By Category */}
-      <div className="bg-gray-50 py-6">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xl font-bold mb-4 text-center">Shop By Category</h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-            {[
-              { name: 'Smartphones', icon: '📱', bg: 'bg-blue-100', color: 'text-blue-800' },
-              { name: 'Laptops', icon: '💻', bg: 'bg-purple-100', color: 'text-purple-800' },
-              { name: 'Fragrances', icon: '🌸', bg: 'bg-pink-100', color: 'text-pink-800' },
-              { name: 'Skincare', icon: '🧴', bg: 'bg-green-100', color: 'text-green-800' },
-              { name: 'Groceries', icon: '🛒', bg: 'bg-yellow-100', color: 'text-yellow-800' },
-              { name: 'Home Decor', icon: '🏠', bg: 'bg-red-100', color: 'text-red-800' },
-            ].map((category) => (
-              <Link 
-                key={category.name}
-                to={`/category/${category.name.toLowerCase()}`} 
-                className={`${category.bg} ${category.color} rounded-lg p-3 text-center hover:shadow-sm transition-all`}
-              >
-                <div className="text-2xl mb-1">{category.icon}</div>
-                <h3 className="font-medium text-xs">{category.name}</h3>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+  {[
+    { name: 'Smartphones', icon: '📱', bg: 'from-blue-100 to-blue-50', color: 'text-blue-800' },
+    { name: 'Laptops', icon: '💻', bg: 'from-purple-100 to-purple-50', color: 'text-purple-800' },
+    { name: 'Fragrances', icon: '🌸', bg: 'from-pink-100 to-pink-50', color: 'text-pink-800' },
+    { name: 'Skincare', icon: '🧴', bg: 'from-green-100 to-green-50', color: 'text-green-800' },
+    { name: 'Groceries', icon: '🛒', bg: 'from-yellow-100 to-yellow-50', color: 'text-yellow-800' },
+    { name: 'Home Decor', icon: '🏠', bg: 'from-red-100 to-red-50', color: 'text-red-800' },
+  ].map((category) => (
+    <Link
+      key={category.name}
+      to={`/category/${category.name.toLowerCase()}`}
+      className={`
+        bg-gradient-to-br ${category.bg} ${category.color}
+        rounded-xl px-2 py-6 flex flex-col items-center justify-center gap-2 
+        shadow-sm hover:shadow-xl hover:scale-105 focus:shadow-lg focus:scale-105
+        transition-all duration-200 border-2 border-transparent hover:border-[#ac6cff] active:border-[#6129d9]
+        group
+      `}
+      style={{ minHeight: 110 }}
+    >
+      <div className="text-4xl mb-1 transition-transform group-hover:scale-110 group-active:scale-95">{category.icon}</div>
+      <h3 className="font-semibold text-base">{category.name}</h3>
+    </Link>
+  ))}
+</div>
+
 
       {/* Best Deals Section */}
       <div className="container mx-auto px-4 py-6">

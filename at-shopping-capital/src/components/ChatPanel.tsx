@@ -3,7 +3,10 @@ import { useChat } from '../context/ChatContext';
 import { useCart } from '../context/CartContext';
 import { useState, useRef, useEffect } from 'react';
 
-// Product Card for AI responses
+// Your avatar icon, use the uploaded image or set your own path
+const ASSISTANT_AVATAR = "/assistant-avatar.png"; // put the image in public or src/assets
+
+// Product Card for AI responses (unchanged)
 const ChatProductCard = ({ item, onAddToCart }) => {
   const [added, setAdded] = useState(false);
 
@@ -15,7 +18,7 @@ const ChatProductCard = ({ item, onAddToCart }) => {
 
   return (
     <motion.div 
-      className="bg-white rounded-lg border border-gray-200 p-3 flex flex-col shadow-sm"
+      className="bg-white rounded-xl border border-gray-100 p-3 flex flex-col shadow-sm"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -40,14 +43,14 @@ const ChatProductCard = ({ item, onAddToCart }) => {
           <h3 className="font-medium text-sm line-clamp-2">{item.item_name}</h3>
           <p className="text-xs text-gray-500 mt-1">{item.quantity}</p>
           <div className="flex items-center justify-between mt-2">
-            <span className="font-bold text-blue-600">₹{item.estimated_price_inr}</span>
+            <span className="font-bold text-indigo-600">₹{item.estimated_price_inr}</span>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleAddToCart}
               className={`px-3 py-1 text-xs rounded-full ${
                 added 
                   ? 'bg-green-100 text-green-800' 
-                  : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                  : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
               }`}
               disabled={added}
             >
@@ -82,7 +85,7 @@ export default function ChatPanel() {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 96) + "px"; // 96px = 3 lines approx
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 96) + "px";
     }
   }, [inputValue]);
 
@@ -111,13 +114,18 @@ export default function ChatPanel() {
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed top-0 right-0 h-full w-full max-w-md bg-white border-l border-blue-200 rounded-l-2xl shadow-2xl z-50 flex flex-col resize-x overflow-auto"
+          className="fixed top-0 right-0 h-full w-full max-w-xl bg-white rounded-l-3xl shadow-2xl z-50 flex flex-col border-none"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#358cf9] to-[#673ab7] text-white p-4 flex justify-between items-center shadow-sm">
-            <h2 className="text-lg font-bold">Shopping Assistant</h2>
-            <div className="flex items-center space-x-2">
-              <button onClick={() => setPinned(!pinned)} className="text-white" title={pinned ? 'Unpin' : 'Pin'}>
+          <div className="flex items-center px-6 py-4 bg-white border-b border-gray-100 rounded-t-3xl shadow-sm sticky top-0 z-10">
+            <img
+              src={ASSISTANT_AVATAR}
+              alt="Assistant"
+              className="w-9 h-9 rounded-full mr-3 border border-gray-200 bg-white shadow"
+            />
+            <span className="font-bold text-base text-gray-900 flex-1">Shopping Assistant</span>
+            <div className="flex items-center gap-1">
+              <button onClick={() => setPinned(!pinned)} className="text-gray-400 hover:text-indigo-500 p-1 rounded-full transition" title={pinned ? 'Unpin' : 'Pin'}>
                 {pinned ? (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M6.414 5l2.829-2.828a1 1 0 111.414 1.414L7.828 6.414 10 8.586V11H8.586l-2.172-2.172-2.829 2.828a1 1 0 11-1.414-1.414L5 7.586V6H6.414z" />
@@ -128,7 +136,7 @@ export default function ChatPanel() {
                   </svg>
                 )}
               </button>
-              <button onClick={closeChat} className="text-white">
+              <button onClick={closeChat} className="text-gray-400 hover:text-red-400 p-1 rounded-full transition" title="Close">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -137,13 +145,13 @@ export default function ChatPanel() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-5 bg-gradient-to-b from-gray-50 to-white">
             {messages.map((message) => (
               <div key={message.id} className={`mb-4 ${message.sender === 'user' ? 'text-right' : ''}`}>
-                <div className={`inline-block p-3 rounded-lg max-w-[80%] shadow-sm ${
+                <div className={`inline-block p-3 rounded-2xl max-w-[80%] shadow-sm ${
                   message.sender === 'user' 
-                    ? 'bg-blue-500 text-white rounded-br-none' 
-                    : 'bg-white border border-gray-200 rounded-bl-none'
+                    ? 'bg-indigo-500 text-white rounded-br-none' 
+                    : 'bg-gray-100 text-gray-900 rounded-bl-none'
                 }`}>
                   {message.content}
                 </div>
@@ -164,16 +172,16 @@ export default function ChatPanel() {
           </div>
 
           {/* Input Area */}
-          <div className="p-4 border-t border-gray-200 bg-white">
-            <div className="flex">
+          <div className="p-4 border-t border-gray-100 bg-white">
+            <div className="flex items-center gap-2">
               <textarea
                 ref={textareaRef}
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none max-h-24 min-h-[40px] text-sm bg-gray-50"
+                placeholder="Type a message…"
+                className="flex-1 rounded-full px-5 py-2 text-sm border border-gray-200 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-gray-50 shadow-sm transition"
                 rows={1}
-                style={{ overflowY: 'auto' }}
+                style={{ minHeight: 40, maxHeight: 96, overflowY: 'auto', resize: 'none' }}
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -184,11 +192,8 @@ export default function ChatPanel() {
               />
               <button
                 onClick={handleSend}
-                className="bg-blue-600 text-white rounded-r-lg px-4 py-2 font-medium hover:bg-blue-700 transition"
-                style={{
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0
-                }}
+                className="ml-1 px-5 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm shadow transition hover:from-indigo-600 hover:to-purple-600 active:scale-95"
+                style={{ minWidth: 72 }}
               >
                 Send
               </button>

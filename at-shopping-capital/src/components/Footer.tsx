@@ -8,8 +8,13 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4 flex items-center">
-              <div className="bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-2">C9</div>
-              Cloud 9
+                <img
+                  src="/logo.png" // Use your cropped icon path
+                  alt="ShopWise Logo"
+                  className="w-10 h-10 mr-3 rounded bg-white p-1 shadow"
+                  draggable={false}
+                />
+                <span className="text-2xl font-bold tracking-tight">ShopWise</span>
             </h3>
             <p className="text-gray-400">
               Your one-stop destination for all your shopping needs. Quality products, fast delivery.
@@ -53,7 +58,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-          <p>© 2023 Cloud 9. All rights reserved.</p>
+          <p>© 2025 ShopWise. All rights reserved.</p>
         </div>
       </div>
     </footer>

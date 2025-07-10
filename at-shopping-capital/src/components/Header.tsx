@@ -22,11 +22,15 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center">
-            <div className="text-2xl font-bold flex items-center">
-              <div className="bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-2">C9</div>
-              Cloud 9
-            </div>
-          </Link>
+  <img
+    src="/logo.png" // Use your cropped icon path
+    alt="ShopWise Logo"
+    className="w-10 h-10 mr-3 rounded bg-white p-1 shadow"
+    draggable={false}
+  />
+  <span className="text-2xl font-bold tracking-tight">ShopWise</span>
+</Link>
+
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">

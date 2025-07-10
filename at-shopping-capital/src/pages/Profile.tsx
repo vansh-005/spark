@@ -7,7 +7,7 @@ const Profile: React.FC = () => {
   
   const user = {
     name: 'Alex Morgan',
-    email: 'alex.morgan@example.com',
+    email: 'alex.morgan@gmail.com',
     joinDate: 'January 15, 2023',
     orders: 12,
     points: 420,
