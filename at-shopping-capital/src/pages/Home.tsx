@@ -5,9 +5,9 @@ import ChatBanner from '../components/ChatBanner';
 
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-brutal">
       {/* Chat to Buy Banner (Prominent position below header) */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 py-4">
+      <div className="bg-brutalPink border-b-4 border-black py-4 shadow-[4px_4px_0_rgba(0,0,0,1)]">
         <div className="container mx-auto px-4">
           <ChatBanner />
         </div>
@@ -22,7 +22,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Shop By Category */}
-      <div className="bg-gray-50 py-6">
+      <div className="bg-brutalGray py-6 border-t-4 border-black">
         <div className="container mx-auto px-4">
           <h2 className="text-xl font-bold mb-4 text-center">Shop By Category</h2>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
               <Link 
                 key={category.name}
                 to={`/category/${category.name.toLowerCase()}`} 
-                className={`${category.bg} ${category.color} rounded-lg p-3 text-center hover:shadow-sm transition-all`}
+                className={`brutal-card p-3 text-center`}
               >
                 <div className="text-2xl mb-1">{category.icon}</div>
                 <h3 className="font-medium text-xs">{category.name}</h3>

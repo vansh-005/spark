@@ -12,7 +12,7 @@ const Missions: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-brutalYellow py-8 font-brutal">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Your Missions</h1>
@@ -22,10 +22,10 @@ const Missions: React.FC = () => {
         </div>
         
         {/* Rewards Card */}
-        <motion.div 
+        <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl shadow-xl p-6 mb-10 text-white"
+          className="brutal-card bg-brutalPink mb-10"
         >
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
@@ -51,7 +51,7 @@ const Missions: React.FC = () => {
               </div>
             </div>
             
-            <button className="mt-4 md:mt-0 bg-black text-white px-6 py-2 rounded-full font-bold hover:bg-gray-800 transition">
+            <button className="mt-4 md:mt-0 brutal-button">
               Claim Rewards
             </button>
           </div>
@@ -65,8 +65,8 @@ const Missions: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: mission.id * 0.1 }}
-              className={`bg-white rounded-2xl shadow-lg p-6 border-2 ${
-                mission.completed ? 'border-green-500' : 'border-gray-100'
+              className={`brutal-card p-6 ${
+                mission.completed ? 'border-green-500' : ''
               }`}
             >
               <div className="flex justify-between items-start mb-4">
@@ -74,7 +74,7 @@ const Missions: React.FC = () => {
                   <h3 className="font-bold text-gray-800 text-xl">{mission.title}</h3>
                   <p className="text-gray-600 mt-1">{mission.description}</p>
                 </div>
-                <div className="bg-gradient-to-r from-yellow-400 to-amber-500 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="bg-brutalPink border-4 border-black w-12 h-12 rounded-full flex items-center justify-center text-black font-bold">
                   +{mission.points}
                 </div>
               </div>
@@ -97,10 +97,8 @@ const Missions: React.FC = () => {
                 )}
                 
                 <button 
-                  className={`px-4 py-2 rounded-full text-sm font-medium ${
-                    mission.completed 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  className={`px-4 py-2 brutal-button text-sm ${
+                    mission.completed ? 'bg-green-200 text-black' : ''
                   }`}
                 >
                   {mission.completed ? 'Claimed' : 'Start Mission'}
@@ -124,9 +122,9 @@ const Missions: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
-                className={`bg-white rounded-2xl shadow-lg p-6 border-t-4 ${
-                  index === 0 ? 'border-amber-700' : 
-                  index === 1 ? 'border-gray-400' : 
+                className={`brutal-card p-6 border-t-4 ${
+                  index === 0 ? 'border-amber-700' :
+                  index === 1 ? 'border-gray-400' :
                   'border-yellow-400'
                 }`}
               >
@@ -153,7 +151,7 @@ const Missions: React.FC = () => {
                   ))}
                 </ul>
                 
-                <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-lg font-bold hover:from-blue-600 hover:to-purple-600 transition">
+                <button className="w-full brutal-button">
                   Unlock at {tier.points} points
                 </button>
               </motion.div>
