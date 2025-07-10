@@ -1,19 +1,26 @@
 @import "tailwindcss";
+
+body {
+  @apply font-brutal bg-brutalYellow text-black;
+}
+
 .primary-bg {
   background-color: #0071dc;
   color: #fff;
 }
+
+.brutal-card {
+  @apply border-4 border-black bg-white shadow-[6px_6px_0_0_rgba(0,0,0,1)];
+}
+
+.brutal-button {
+  @apply border-4 border-black rounded-none bg-brutalPink text-black px-4 py-2 font-bold shadow-[4px_4px_0_0_rgba(0,0,0,1)];
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none !important;
 }
 .no-scrollbar {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
-}
-
-:root {
-  --primary: #2186eb;
-  --secondary: #6c63ff;
-  --accent: #ff6584;
-  --success: #4caf50;
 }

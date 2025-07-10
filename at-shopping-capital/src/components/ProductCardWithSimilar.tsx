@@ -38,7 +38,7 @@ export default function ProductCardWithSimilar({ product }: { product: any }) {
       onMouseLeave={handleMouseLeave}
     >
       {/* Main product card */}
-      <div className="flex gap-4 p-4 rounded-2xl bg-white shadow-md border border-blue-100">
+      <div className="flex gap-4 p-4 brutal-card">
         <img src={product.thumbnail} alt={product.title} className="h-24 w-24 object-contain rounded-xl bg-gray-50" />
         <div>
           <div className="font-bold text-blue-900 text-xl">{product.title}</div>
@@ -49,7 +49,7 @@ export default function ProductCardWithSimilar({ product }: { product: any }) {
               <span className="bg-green-100 text-green-800 text-xs rounded px-2 py-1">{Math.round(product.discountPercentage)}% OFF</span>
             )}
           </div>
-          <button className="mt-3 bg-blue-600 text-white font-bold px-6 py-2 rounded-lg hover:bg-blue-700 transition">Add to Cart</button>
+          <button className="mt-3 brutal-button">Add to Cart</button>
         </div>
       </div>
       {/* Similar popup */}
@@ -59,7 +59,7 @@ export default function ProductCardWithSimilar({ product }: { product: any }) {
             initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 24 }}
             exit={{ opacity: 0, x: 16 }}
-            className="absolute top-0 left-full ml-4 z-40 w-60 bg-white shadow-2xl rounded-2xl p-4 border border-blue-200"
+            className="absolute top-0 left-full ml-4 z-40 w-60 brutal-card"
             style={{ minHeight: 160 }}
           >
             <div className="font-semibold text-blue-800 mb-2 text-sm">Similar Products</div>

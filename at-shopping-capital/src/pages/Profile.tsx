@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-brutalYellow py-8 font-brutal">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Profile Sidebar */}
@@ -48,9 +48,9 @@ const Profile: React.FC = () => {
             animate={{ x: 0, opacity: 1 }}
             className="md:w-1/3"
           >
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <div className="brutal-card p-6 mb-6">
               <div className="flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold mb-4">
+                <div className="w-24 h-24 rounded-full bg-brutalPink border-4 border-black flex items-center justify-center text-black text-3xl font-bold mb-4">
                   {userData.name.charAt(0)}
                 </div>
                 <h2 className="text-2xl font-bold mb-1">{userData.name}</h2>
@@ -71,16 +71,16 @@ const Profile: React.FC = () => {
                   </div>
                 </div>
                 
-                <button 
+                <button
                   onClick={() => setEditMode(!editMode)}
-                  className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+                  className="brutal-button w-full"
                 >
                   {editMode ? 'Save Changes' : 'Edit Profile'}
                 </button>
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="brutal-card p-6">
               <h3 className="text-lg font-bold mb-4">Account Details</h3>
               <ul className="space-y-3">
                 <li className="flex justify-between">
@@ -110,7 +110,7 @@ const Profile: React.FC = () => {
             className="md:w-2/3"
           >
             {/* Tabs */}
-            <div className="bg-white rounded-2xl shadow-lg mb-6">
+            <div className="brutal-card mb-6">
               <div className="flex border-b">
                 <button
                   onClick={() => setActiveTab('orders')}
@@ -295,7 +295,7 @@ const Profile: React.FC = () => {
                           type="text"
                           value={userData.name}
                           onChange={(e) => setUserData({...userData, name: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full border-4 border-black px-4 py-2"
                         />
                       </div>
                       
@@ -305,7 +305,7 @@ const Profile: React.FC = () => {
                           type="email"
                           value={userData.email}
                           onChange={(e) => setUserData({...userData, email: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full border-4 border-black px-4 py-2"
                         />
                       </div>
                       
@@ -315,7 +315,7 @@ const Profile: React.FC = () => {
                           type="tel"
                           value={userData.phone}
                           onChange={(e) => setUserData({...userData, phone: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full border-4 border-black px-4 py-2"
                         />
                       </div>
                       
@@ -324,13 +324,13 @@ const Profile: React.FC = () => {
                         <textarea
                           value={userData.address}
                           onChange={(e) => setUserData({...userData, address: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full border-4 border-black px-4 py-2"
                           rows={3}
                         ></textarea>
                       </div>
                       
                       <div className="pt-4">
-                        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                        <button className="brutal-button">
                           Save Changes
                         </button>
                       </div>
@@ -341,7 +341,7 @@ const Profile: React.FC = () => {
             </div>
             
             {/* Rewards Card */}
-            <div className="bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl shadow-lg p-6 text-white">
+            <div className="brutal-card bg-brutalPink text-black">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-xl font-bold mb-2">Your Rewards Status</h3>
@@ -355,7 +355,7 @@ const Profile: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <button className="bg-black text-white px-6 py-2 rounded-full font-bold hover:bg-gray-800 transition">
+                <button className="brutal-button">
                   View Rewards
                 </button>
               </div>

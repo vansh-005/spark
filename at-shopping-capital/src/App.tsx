@@ -15,7 +15,7 @@ function App() {
     <CartProvider>
       <ChatProvider>
         <Router>
-          <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+          <div className="min-h-screen flex flex-col bg-brutalYellow font-brutal">
             <Header />
             <main className="flex-grow">
               <Routes>
