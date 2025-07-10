@@ -1,75 +1,66 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-interface ChatMessage {
+export interface CartItem {
   id: string;
-  sender: 'user' | 'ai';
-  content: string;
-  items?: any[];
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
 }
 
-interface ChatContextType {
-  isOpen: boolean;
-  messages: ChatMessage[];
-  openChat: () => void;
-  closeChat: () => void;
-  sendMessage: (message: string) => void;
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
+  totalItems: number;
+  totalPrice: number;
 }
 
-const ChatContext = createContext<ChatContextType | undefined>(undefined);
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const ChatProvider = ({ children }: { children: ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
 
-  const openChat = () => setIsOpen(true);
-  const closeChat = () => setIsOpen(false);
-
-  const sendMessage = async (message: string) => {
-    // Add user message
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      sender: 'user',
-      content: message
-    };
-    setMessages(prev => [...prev, userMessage]);
-
-    try {
-      // Send to backend
-      const response = await fetch('http://127.0.0.1:8000/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ required_data: message })
-      });
-
-      const data = await response.json();
-      
-      // Add AI response
-      const aiMessage: ChatMessage = {
-        id: Date.now().toString(),
-        sender: 'ai',
-        content: 'Here are some products I found:',
-        items: data.data
-      };
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      const errorMessage: ChatMessage = {
-        id: Date.now().toString(),
-        sender: 'ai',
-        content: 'Sorry, I encountered an error. Please try again.'
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    }
+  const addToCart = (item: CartItem) => {
+    setCart(prev => {
+      const existing = prev.find(p => p.id === item.id);
+      if (existing) {
+        return prev.map(p =>
+          p.id === item.id ? { ...p, quantity: p.quantity + item.quantity } : p
+        );
+      }
+      return [...prev, item];
+    });
   };
 
+  const removeFromCart = (id: string) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const updateQuantity = (id: string, quantity: number) => {
+    setCart(prev =>
+      prev.map(item => (item.id === id ? { ...item, quantity } : item))
+    );
+  };
+
+  const clearCart = () => setCart([]);
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   return (
-    <ChatContext.Provider value={{ isOpen, messages, openChat, closeChat, sendMessage }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice }}
+    >
       {children}
-    </ChatContext.Provider>
+    </CartContext.Provider>
   );
 };
 
-export const useChat = () => {
-  const context = useContext(ChatContext);
-  if (!context) throw new Error('useChat must be used within a ChatProvider');
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) throw new Error('useCart must be used within a CartProvider');
   return context;
 };

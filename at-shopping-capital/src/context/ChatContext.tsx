@@ -42,7 +42,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       });
 
       const data = await response.json();
-      
+      console.log('Backend response:', data); 
       // Add AI response
       const aiMessage: ChatMessage = {
         id: Date.now().toString(),
