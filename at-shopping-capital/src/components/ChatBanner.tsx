@@ -1,9 +1,21 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { useChat } from "../context/ChatContext";
 
 export default function ChatBanner() {
   const [state, setState] = useState<"collapsed" | "expanded">("collapsed");
+  const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { openChat, sendMessage } = useChat();
+
+  const handleSend = () => {
+    if (inputValue.trim()) {
+      openChat();
+      sendMessage(inputValue.trim());
+      setInputValue("");
+      setState("collapsed");
+    }
+  };
 
   return (
     <div className="w-full">
@@ -43,10 +55,16 @@ export default function ChatBanner() {
           <div className="flex items-center">
             <input
               ref={inputRef}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               className="flex-1 rounded-l-full px-4 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
               placeholder="Ask for product recommendations..."
             />
-            <button className="bg-blue-600 text-white rounded-r-full px-4 py-2 text-sm font-medium hover:bg-blue-700 transition">
+            <button 
+              onClick={handleSend}
+              className="bg-blue-600 text-white rounded-r-full px-4 py-2 text-sm font-medium hover:bg-blue-700 transition"
+            >
               Send
             </button>
           </div>
