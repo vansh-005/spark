@@ -106,21 +106,36 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
                     </span>
                   )}
                 </div>
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    addToCart({
-                      id: product.id,
-                      name: product.title,
-                      price: product.price * (1 - (product.discountPercentage || 0) / 100),
-                      quantity: 1,
-                      image: product.thumbnail
-                    });
-                  }}
-                  className="text-blue-600 hover:text-blue-800 text-[10px] font-medium"
-                >
-                  Add
-                </button>
+         <button
+  onClick={(e) => {
+    e.preventDefault();
+    addToCart({
+      id: product.id,
+      name: product.title,
+      price: product.price * (1 - (product.discountPercentage || 0) / 100),
+      quantity: 1,
+      image: product.thumbnail
+    });
+  }}
+  className="
+    bg-blue-600
+    hover:bg-blue-700
+    text-white
+    text-xs    font-semibold
+    px-4
+    py-2
+    rounded-xl
+    shadow
+    transition-colors
+    duration-200
+    focus:outline-none
+    focus:ring-2
+    focus:ring-blue-400
+  "
+>
+  Add 
+</button>
+
               </div>
             </div>
           </motion.div>
